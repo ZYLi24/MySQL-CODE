@@ -1,4 +1,4 @@
-#### Q175
+### Q175
 
 SELECT<br> 
     p.FirstName,<br>
@@ -9,7 +9,7 @@ FROM Person p<br>
 Left Join Address a <br>
 USING (PersonID)<br>
 
-#### Q176
+### Q176
 
 SELECT (<br>
      SELECT DISTINCT Salary<br>
@@ -18,7 +18,7 @@ SELECT (<br>
      LIMIT 1, 1<br>
 ) AS SecondHighestSalary<br>
 
-#### Q177
+### Q177
 
 CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT<br>
 BEGIN<br>
@@ -35,14 +35,14 @@ BEGIN<br>
   
 END<br>
 
-#### Q178
+### Q178
 
 SELECT<br>
     Score,<br>
     DENSE_RANK() OVER (ORDER BY Score DESC) AS 'Rank'<br>
 FROM Scores<br>
 
-#### Q180
+### Q180
 
 SELECT DISTINCT l1.Num AS ConsecutiveNums<br>
 From Logs l1<br>
