@@ -121,13 +121,13 @@ DELETE p2
 FROM Person p1, Person p2
 WHERE p1.Email = p2.Email AND p1.Id < p2.Id
 
-197. Rising Temperature
+### 197. Rising Temperature
 
 SELECT w1.id
 FROM Weather w1, Weather w2
 WHERE w1.recordDate = DATE_ADD(w2.recordDate, INTERVAL 1 DAY) AND w1.Temperature > w2.Temperature
 
-262. Trips and Users
+### 262. Trips and Users
     ###Method 1:
 
 WITH comb_trips AS (
