@@ -7,7 +7,7 @@ SELECT
     a.State  
 FROM Person p  
 Left Join Address a  
-USING (PersonID)  
+	USING (PersonID)  
 
 ### 176. Second Highest Salary
 
@@ -48,7 +48,7 @@ SELECT DISTINCT l1.Num AS ConsecutiveNums
 From Logs l1  
 Join Logs l2  
 Join Logs l3  
-ON l1.Id = l2.Id - 1 AND l1.Id = l3.Id - 2  
+	ON l1.Id = l2.Id - 1 AND l1.Id = l3.Id - 2  
 WHERE l1.Num = l2.Num AND l1.Num = l3.Num  
 
 ### 181. Employees Earning More Than Their Managers
@@ -56,7 +56,7 @@ WHERE l1.Num = l2.Num AND l1.Num = l3.Num
 SELECT e.Name AS Employee  
 FROM Employee e  
 LEFT JOIN Employee m  
-ON e.ManagerId = m.Id  
+	ON e.ManagerId = m.Id  
 WHERE e.Salary > m.Salary  
 
 ### 182. Duplicate Emails
@@ -89,7 +89,7 @@ SELECT
     e.Salary  
 FROM Employee e  
 JOIN Department d  
-ON e.DepartmentId = d.Id  
+	ON e.DepartmentId = d.Id  
 WHERE e.Salary = (
     SELECT MAX(Salary)  
     FROM Employee  
@@ -111,7 +111,7 @@ FROM(
         DENSE_RANK() OVER (PARTITION BY e.DepartmentId ORDER BY e.Salary DESC) AS ranking
     FROM Employee e 
     JOIN Department d 
-    ON e.DepartmentId = d.Id
+    	ON e.DepartmentId = d.Id
 ) salary_rank
 WHERE ranking < 4
 
