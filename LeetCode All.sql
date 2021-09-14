@@ -128,7 +128,7 @@ FROM Weather w1, Weather w2
 WHERE w1.recordDate = DATE_ADD(w2.recordDate, INTERVAL 1 DAY) AND w1.Temperature > w2.Temperature
 
 ### 262. Trips and Users
-    ###Method 1:
+	###Method 1:
 
 WITH comb_trips AS (
     SELECT
@@ -172,7 +172,7 @@ FROM (
         AND Cancellation_Rate IS NOT NULL
 ) crate
 
-###Method 2 Easier Way:
+	###Method 2 Easier Way:
 
 SELECT 
     t.request_at AS Day, 
@@ -189,3 +189,50 @@ JOIN Users AS u1 ON (t.client_id = u1.users_id AND u1.banned ='No')
 JOIN Users AS u2 ON (t.driver_id = u2.users_id AND u2.banned ='No')
 WHERE t.request_at BETWEEN '2013-10-01' AND '2013-10-03'
 GROUP BY t.request_at
+
+### 511. Game Play Analysis I
+
+SELECT player_id, MIN(event_date) AS first_login
+FROM Activity
+GROUP BY player_id
+ORDER BY player_id
+
+### 512. Game Play Analysis II
+
+SELECT player_id, device_id
+FROM Activity
+WHERE (player_id, event_date)
+    IN (
+        SELECT player_id, MIN(event_date)
+        FROM Activity
+        GROUP BY player_id
+    )
+
+### 534. Game Play Analysis III
+
+SELECT
+    player_id,
+    event_date,
+    (
+        SELECT SUM(
+            CASE
+            WHEN player_id = a1.player_id AND event_date <= a1.event_date
+            THEN games_played
+            END
+        )
+        FROM Activity
+    ) AS games_played_so_far
+FROM Activity a1
+
+### 550. Game Play Analysis IV
+
+SELECT ROUND(
+    (
+        (SELECT COUNT(DISTINCT player_id)
+        FROM Activity
+        WHERE (player_id, event_date) IN (SELECT player_id, ADDDATE(MIN(event_date), INTERVAL 1 DAY) FROM Activity GROUP BY player_id))
+        /
+        (SELECT COUNT(DISTINCT player_id)
+        FROM Activity)
+    ), 2
+) AS fraction
