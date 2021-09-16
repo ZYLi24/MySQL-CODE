@@ -247,3 +247,65 @@ SELECT ROUND(
         )
     ), 2
 ) AS fraction
+
+### 569. Median Employee Salary
+
+	### Without Window Functions
+SELECT
+    Id,
+    Company,
+    Salary
+FROM (
+    SELECT 
+        *,
+        @rev_row := CASE WHEN @rev_comp = rev_index2.Company THEN @rev_row+1 ELSE 1 END AS rev_row,
+        @rev_comp := rev_index2.Company AS rev_Company
+    FROM 
+        (
+            SELECT *
+            FROM
+                (
+                    SELECT
+                        e.Id,
+                        e.Salary,
+                        @row_num := CASE WHEN @comp = e.Company THEN @row_num+1 ELSE 1 END AS row_num,
+                        @comp := e.Company AS Company
+                    FROM 
+                        (SELECT * FROM Employee ORDER BY Company, Salary, Id) e,
+                        (SELECT @row_num := 0, @comp := '') index_tab1
+                ) rev_index1
+            ORDER BY Company, Salary DESC, Id DESC
+        ) rev_index2,
+        (SELECT @rev_row := 0, @rev_comp := '') index_tab2
+) final_tab
+WHERE ABS(rev_row - row_num) <= 1
+ORDER BY Company, Salary, Id
+
+	### With Window Functions
+
+SELECT
+    Id,
+    Company,
+    Salary
+FROM (
+SELECT
+        *,
+        row_number() OVER (PARTITION BY Company ORDER BY Salary, Id) AS index_num,
+        row_number() OVER (PARTITION BY Company ORDER BY Salary DESC, Id DESC) AS rev_index
+    FROM Employee
+    ORDER BY Company, Salary, Id
+) index_table
+WHERE ABS(CAST(index_num AS SIGNED) - CAST(rev_index AS SIGNED)) <= 1
+
+607. Sales Person
+
+SELECT name
+FROM salesperson
+WHERE sales_id NOT IN (
+    SELECT o.sales_id
+    FROM orders o
+    LEFT JOIN company c
+        USING (com_id)
+    WHERE c.name = 'RED'
+)
+
