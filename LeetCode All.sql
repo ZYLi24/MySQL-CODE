@@ -297,6 +297,57 @@ SELECT
 ) index_table
 WHERE ABS(CAST(index_num AS SIGNED) - CAST(rev_index AS SIGNED)) <= 1
 
+570. Managers with at Least 5 Direct Reports
+
+SELECT e2.Name
+FROM Employee e1
+JOIN Employee e2
+    ON (e1.ManagerId = e2.Id)
+GROUP BY e2.Name
+HAVING COUNT(e1.Name) >= 5
+
+571. Find Median Given Frequency of Numbers
+	
+	### Method 1 Using CASE WHEN
+WITH sum_table AS (
+    SELECT 
+        *,
+        SUM(Frequency) OVER () AS sum_total,
+        (SUM(Frequency) OVER ())/2 - SUM(Frequency) OVER (ORDER BY Number) AS sum_sep
+    FROM Numbers
+)
+
+SELECT median
+FROM (
+    SELECT (
+        CASE
+        WHEN sum_total % 2 = 0 AND sum_sep = 0
+        THEN (Number + (SELECT Number FROM Numbers WHERE Number > s.Number LIMIT 1))/2
+        WHEN sum_total % 2 = 0 AND sum_sep < 0
+        THEN Number
+        WHEN sum_total % 2 <> 0 AND sum_sep < 0
+        THEN Number
+        END
+    ) AS median
+    FROM sum_table s
+) final_table
+WHERE median IS NOT NULL
+LIMIT 1
+
+	###Method 2 Using Two Index
+
+SELECT AVG(Number) AS median
+FROM (
+    SELECT
+        Number,
+        SUM(Frequency) OVER (ORDER BY Number) AS sum_asc,
+        SUM(Frequency) OVER (ORDER BY Number DESC) AS sum_desc,
+        (SUM(Frequency) OVER ())/2 AS sum_total_half
+    FROM Numbers
+) final_table
+WHERE sum_asc >= sum_total_half AND sum_desc >= sum_total_half
+
+
 607. Sales Person
 
 SELECT name
@@ -308,4 +359,6 @@ WHERE sales_id NOT IN (
         USING (com_id)
     WHERE c.name = 'RED'
 )
+
+
 
